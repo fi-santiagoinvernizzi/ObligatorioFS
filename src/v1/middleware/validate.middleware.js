@@ -1,6 +1,6 @@
 import { mensajesJoi } from "../config/joi-message.js";
 
-export const velidateRequest = (schema, reqKey) => {
+export const validateRequest = (schema, reqKey) => {
     return (req, res, next) => {
         const objetoAValidar = req[reqKey];
         const { error, value } = schema.validate(objetoAValidar, {

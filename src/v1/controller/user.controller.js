@@ -1,5 +1,5 @@
 import { createUserService } from "../services/auth.service.js";
-import { deleteUserService, replaceUserService, updateUserService } from "../services/user.services.js";
+import { deleteUserService, replaceUserService, updateUserService, upgradeUserPlanService } from "../services/user.services.js";
 
 
 
@@ -29,3 +29,9 @@ export const replaceUserController = async (req, res) => {
     const user = await replaceUserService(idUser, data);
     return res.status(200).json(user);
 }
+
+export const upgradeUserPlanController = async (req, res) => {
+    const user = await upgradeUserPlanService(req.user.id);
+
+    return res.status(200).json(user);
+};

@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
-
+import { Plans } from "../constants/plans.constants.js";
+import { constructorError } from "../utils/contructor.error.js";
 
 //este metodo posiblente sea solo para un user admin, no para todos los usuarios
 export const getAllUsersService = async () => {
@@ -41,4 +42,19 @@ export const replaceUserService = async (id, data) => {
     return await User.findByIdAndReplace(id, data, { new: true });
 }
 
+export const upgradeUserPlanService = async (id) => {
+    const user = await User.findById(id);
+
+    if (!user) {
+        throw constructorError("Usuario no encontrado", 404);
+    }
+
+    if (user.plan === Plans.premium) {
+        throw constructorError("El usuario ya tiene el plan premium", 409);
+    }
+
+    user.plan = Plans.premium;
+
+    return await user.save();
+};
 

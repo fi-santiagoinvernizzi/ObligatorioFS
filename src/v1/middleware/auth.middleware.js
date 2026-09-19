@@ -1,16 +1,16 @@
 import { loginBodySchema } from "../schemas/login-body.schema.js";
 import { registerBodySchema, roleSchema } from "../schemas/register-body.schema.js";
-import { velidateRequest } from "./validate.middleware.js";
+import { validateRequest } from "./validate.middleware.js";
 import { verifyAccessToken } from "../utils/token.util.js";
 
 
 
 //middleware para validar el body del login
-export const middlewareValidateLoginBody = velidateRequest(loginBodySchema, "body");
+export const middlewareValidateLoginBody = validateRequest(loginBodySchema, "body");
 //middleware para validar el body del registro
-export const middlewareValidateRegisterBody = velidateRequest(registerBodySchema, "body");
+export const middlewareValidateRegisterBody = validateRequest(registerBodySchema, "body");
 
-export const validateRolMiddleware = velidateRequest(roleSchema, "body");
+export const validateRolMiddleware = validateRequest(roleSchema, "body");
 
 
 export const authMiddleware = (req, res, next) => {
