@@ -16,9 +16,13 @@ export const createMovieController = async (req, res, next) => {
 
 export const getMoviesController = async (req, res, next) => {
     try {
-        const movies = await getMoviesService(req.user.id);
-        return res.status(200).json(movies);
+        const page = Math.max(Number(req.query.page) || 1, 1);
+        const limit = Math.min(Math.max(Number(req.query.limit) || 10, 1),100);
 
+        const movies = await getMoviesService(req.user.id, page, limit);
+
+        return res.status(200).json(movies);
+        
     } catch (error) {
         next(error);
     }

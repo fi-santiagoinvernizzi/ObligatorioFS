@@ -31,12 +31,14 @@ export const createMovieService = async (data, userId) => {
     return movie;
 };
 
-export const getMoviesService = async (userId) => {
-    const movies = await Movie.find({
-        user: userId
-    });
+export const getMoviesService = async (userId, page, limit) => {
+    const skip = (page - 1) * limit;
 
-    return movies;
+    return await Movie.find({ user: userId })
+        .select("title description releaseYear category user")
+        .skip(skip)
+        .limit(limit)
+        .lean();
 };
 
 export const getMovieByIdService = async (movieId, userId) => {
