@@ -1,5 +1,5 @@
 import { Router } from "express";
-
+import { sanitizeMovieMiddleware } from "../middleware/sanitize.middleware.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import { validateRequest } from "../middleware/validate.middleware.js";
 
@@ -12,10 +12,10 @@ const movieRoutes = Router();
 
 movieRoutes.get("/", authMiddleware, getMoviesController);
 movieRoutes.get("/:idMovie", authMiddleware, validateRequest(movieIdParamsSchema, "params"), getMovieByIdController);
-movieRoutes.post("/", authMiddleware, validateRequest(createMovieSchema, "body"), createMovieController);
-movieRoutes.patch("/:idMovie", authMiddleware, validateRequest(movieIdParamsSchema, "params"), 
+movieRoutes.post("/", authMiddleware, sanitizeMovieMiddleware, validateRequest(createMovieSchema, "body"), createMovieController);
+movieRoutes.patch("/:idMovie", authMiddleware, sanitizeMovieMiddleware , validateRequest(movieIdParamsSchema, "params"), 
                     validateRequest(updateMovieSchema, "body"), updateMovieController);
-movieRoutes.put("/:idMovie", authMiddleware, validateRequest(movieIdParamsSchema, "params"), 
+movieRoutes.put("/:idMovie", authMiddleware, sanitizeMovieMiddleware, validateRequest(movieIdParamsSchema, "params"), 
                 validateRequest(replaceMovieSchema, "body"), replaceMovieController);
 movieRoutes.delete( "/:idMovie", authMiddleware, validateRequest(movieIdParamsSchema, "params"), deleteMovieController);
 

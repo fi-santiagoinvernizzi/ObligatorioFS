@@ -13,7 +13,7 @@ export async function connectMongo() {
     }
     try {
         await mongoose.connect(mongoUri, {
-            dbName: process.env.MONGO_DATABASE || "clasepractica10",
+            dbName: process.env.MONGO_DATABASE,
             serverSelectionTimeoutMS: 30000,
         });
 

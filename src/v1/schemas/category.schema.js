@@ -11,7 +11,6 @@ export const createCategorySchema = Joi.object({
         .trim()
         .min(1)
         .max(255)
-        .required()
 });
 
 export const categoryIdParamsSchema = Joi.object({
@@ -33,4 +32,4 @@ export const updateCategorySchema = Joi.object({
         .trim()
         .min(1)
         .max(255)
-}).min(1).required;
+}).min(1);

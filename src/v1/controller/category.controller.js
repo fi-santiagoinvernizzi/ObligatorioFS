@@ -1,4 +1,5 @@
-import { createCategoryService, getCategoriesService, getCategoryByIdService, updateCategoryService } from "../services/category.services.js";
+import { createCategoryService, getCategoriesService, getCategoryByIdService, 
+    updateCategoryService, deleteCategoryService } from "../services/category.services.js";
 
 export const createCategoryController = async (req, res, next) => {
     try {
@@ -38,6 +39,17 @@ export const updateCategoryController = async (req, res, next) => {
         );
         return res.status(200).json(category);
         
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteCategoryController = async (req, res, next) => {
+    try {
+        await deleteCategoryService(req.params.idCategory);
+
+        return res.status(204).send();
+
     } catch (error) {
         next(error);
     }

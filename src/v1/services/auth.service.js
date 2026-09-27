@@ -36,16 +36,12 @@ export const createUserService = async (data) => {
     const password = data.password;
     const hashPassword = await hashear(password);
     
-    //data.password = hashPassword;
-    //guardamos y retornamos el usuario
-    //const user = await User.create(data);
-
     const user = await User.create({
         name: data.name,
         username: data.username,
         email: data.email,
         password: hashPassword,
-        role: Role.user,
+        role: data.role || Role.user,
         plan: Plans.plus
     });
 

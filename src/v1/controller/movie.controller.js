@@ -17,12 +17,23 @@ export const createMovieController = async (req, res, next) => {
 export const getMoviesController = async (req, res, next) => {
     try {
         const page = Math.max(Number(req.query.page) || 1, 1);
-        const limit = Math.min(Math.max(Number(req.query.limit) || 10, 1),100);
+        const limit = Math.min( Math.max(Number(req.query.limit) || 10, 1), 100  );
 
-        const movies = await getMoviesService(req.user.id, page, limit);
+        const filters = {
+            title: req.query.title,
+            category: req.query.category,
+            releaseYear: req.query.releaseYear !== undefined ? Number(req.query.releaseYear) : undefined
+        };
+
+        const movies = await getMoviesService(
+            req.user.id,
+            page,
+            limit,
+            filters
+        );
 
         return res.status(200).json(movies);
-        
+
     } catch (error) {
         next(error);
     }

@@ -59,22 +59,15 @@ export const apiRateLimit = rateLimit({
 export const loginRateLimit = rateLimit({
     windowMs: 15 * 60 * 1000,
 
-    limit: 2,
+    limit: 5,
 
     store: redisStore("rate-limit:login:"),
 
     standardHeaders: true,
     legacyHeaders: false,
-
-    /*
-     * Las peticiones exitosas no consumen intentos.
-     *
-     * Solamente interesa limitar intentos de login fallidos.
-     */
-    skipSuccessfulRequests: false,
+    skipSuccessfulRequests: true,
 
     handler: (req, res) => {
-        console.log('ENTRO EN HANDLER')
         return res.status(429).json({
             message:
                 "Demasiados intentos de inicio de sesión. Intente nuevamente en 15 minutos."

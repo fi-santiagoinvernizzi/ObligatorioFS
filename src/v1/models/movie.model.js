@@ -28,7 +28,12 @@ const movieSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
-    }
+    },
+
+    tmdbId: {
+        type: Number,
+        required: false
+    },
 });
 
 movieSchema.set("toJSON", {

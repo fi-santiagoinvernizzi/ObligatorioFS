@@ -1,7 +1,4 @@
-
-
 import bcrypt from "bcryptjs";
-
 
 const salt = 12;
 

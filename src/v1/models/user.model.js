@@ -6,17 +6,20 @@ const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
+        trim: true
     },
     username: {
         type: String,
         required: true,
         unique: true,
+        trim: true
     },
     email: {
         type: String,
         required: true,
         unique: true,
-        lowercase: true
+        lowercase: true,
+        trim: true
     },
     role: { 
         type: String, 
@@ -26,7 +29,7 @@ const userSchema = new mongoose.Schema({
     plan: {
         type: String,
         enum: Plans,
-        default: "plus",
+        default: Plans.plus,
     },
     password: {
         type: String,
@@ -55,17 +58,6 @@ userSchema.set('toJSON', {
 const User = mongoose.model("User", userSchema);
 
 export default User;
-
-
-// const user = User.findById(id) 
-
-// return res.status(200).json({  user });
-
-// user = {
-//     id:"64a1f8e2c9b1f2a5d6e4b8c3",
-//     name: "Bart",  
-//     email: "algo@algod.com"     
-// }
 
 
 

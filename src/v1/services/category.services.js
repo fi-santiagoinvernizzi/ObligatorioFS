@@ -1,4 +1,5 @@
 import Category from "../models/category.model.js";
+import Movie from "../models/movie.model.js";
 import { constructorError } from "../utils/contructor.error.js";
 
 export const createCategoryService = async (data) => {
@@ -52,4 +53,22 @@ export const updateCategoryService = async (id, data) => {
     }
 
     return await category.save();
+};
+
+export const deleteCategoryService = async (id) => {
+    const category = await Category.findById(id);
+
+    if (!category) {
+        throw constructorError("Categoría no encontrada", 404);
+    }
+
+    const moviesAssociated = await Movie.exists({
+        category: id //si hay peli asociada tirar error
+    });
+
+    if (moviesAssociated) {
+        throw constructorError( "No se puede eliminar una categoría que tiene películas asociadas", 409);
+    }
+
+    await category.deleteOne();
 };
