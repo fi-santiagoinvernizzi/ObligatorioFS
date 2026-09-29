@@ -83,6 +83,7 @@ export const getMoviesService = async ( userId, page, limit, filters = {}) => {
             try {
                 const tmdbMovie = await obtenerPeliculaTMDB(movie.tmdbId);
                 poster = obtenerPosterTMDB(tmdbMovie.poster_path);
+                if(poster == null ) { poster = `No se pudo obtener el poster de TMDB para la película ${movie._id}`}
             } catch (error) {
                 console.error( `No se pudo obtener el poster de TMDB para la película ${movie._id}:`, error.message);
             }
@@ -149,17 +150,17 @@ export const updateMovieService = async (movieId, userId, data) => {
     }
 
     if ( data.title !== undefined || data.releaseYear !== undefined) {
-    const tmdbMovie = await buscarPeliculaTMDB(
-        movie.title,
-        movie.releaseYear
-    );
+        const tmdbMovie = await buscarPeliculaTMDB(
+            movie.title,
+            movie.releaseYear
+        );
 
-    if (!tmdbMovie) {
-        throw constructorError( "No se encontró la película en TMDB", 404 );
+        if (!tmdbMovie) {
+            throw constructorError( "No se encontró la película en TMDB", 404 );
+        }
+
+        movie.tmdbId = tmdbMovie.id;
     }
-
-    movie.tmdbId = tmdbMovie.id;
-}
     return await movie.save();
 };
 

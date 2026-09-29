@@ -8,7 +8,9 @@ const authRoutes = Router();
 
 
 
-authRoutes.post("/login", loginRateLimit, middlewareValidateLoginBody, loginController);
+authRoutes.post("/login", middlewareValidateLoginBody, loginController);
+
+//authRoutes.post("/login", loginRateLimit, middlewareValidateLoginBody, loginController);
 authRoutes.post("/register", middlewareValidateRegisterBody, registerController);
 
 

@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
 app.use(
     "/api",
 
-    apiRateLimit,
+    //apiRateLimit,
 
     // Después conectamos MongoDB.
     async (req, res, next) => {
