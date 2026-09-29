@@ -5,9 +5,6 @@ import { connectMongo } from "./src/v1/config/mongo.config.js";
 import apiRoutes from "./src/v1/routes/index.js";
 
 import { middlewareErrores } from "./src/v1/middleware/error.middleware.js";
-import { apiRateLimit } from "./src/v1/middleware/rate-limit.middleware.js";
-
-// connectRedis();
 
 const app = express();
 
@@ -19,8 +16,6 @@ app.get("/", (req, res) => {
 
 app.use(
     "/api",
-
-    //apiRateLimit,
 
     // Después conectamos MongoDB.
     async (req, res, next) => {
