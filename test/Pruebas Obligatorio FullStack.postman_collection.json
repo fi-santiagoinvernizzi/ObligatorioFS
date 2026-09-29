@@ -58,15 +58,11 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/api/v1/auth/register",
-              "protocol": "http",
+              "raw": "{{base_url}}/auth/register",
               "host": [
-                "localhost"
+                "{{base_url}}"
               ],
-              "port": "3000",
               "path": [
-                "api",
-                "v1",
                 "auth",
                 "register"
               ]
@@ -2311,15 +2307,15 @@
   ],
   "variable": [
     {
-      "key": "base_url_dev",
-      "value": ""
-    },
-    {
-      "key": "base_url",
+      "key": "dev_base_url",
       "value": ""
     },
     {
       "key": "prod_base_url",
+      "value": ""
+    },
+    {
+      "key": "base_url",
       "value": ""
     },
     {
@@ -2392,13 +2388,11 @@
     },
     {
       "key": "movie_4_id",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
       "key": "movie_5_id",
-      "value": "",
-      "type": "default"
+      "value": ""
     }
   ]
 }
