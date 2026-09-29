@@ -1,0 +1,2404 @@
+{
+  "info": {
+    "_postman_id": "704e2b26-1134-4778-bda2-67b1bdc2b3d5",
+    "name": "Pruebas Obligatorio FullStack",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52043025",
+    "_collection_link": "https://go.postman.co/collection/52043025-704e2b26-1134-4778-bda2-67b1bdc2b3d5?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Registro Invalido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene message\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"message\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene errores de validación\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"errors\");\r",
+                  "    pm.expect(json.errors).to.be.an(\"array\");\r",
+                  "    pm.expect(json.errors.length).to.be.greaterThan(0);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"A\",\r\n  \"username\": \"ab\",\r\n  \"email\": \"correo-invalido\",\r\n  \"password\": \"123\",\r\n  \"confirmPassword\": \"456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Registro Exitoso",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const timestamp = Date.now();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\r",
+                  "    \"test_name\",\r",
+                  "    \"Usuario Test\"\r",
+                  ");\r",
+                  "\r",
+                  "pm.collectionVariables.set(\r",
+                  "    \"test_username\",\r",
+                  "    `usuario${timestamp}`\r",
+                  ");\r",
+                  "\r",
+                  "pm.collectionVariables.set(\r",
+                  "    \"test_email\",\r",
+                  "    `usuario${timestamp}@test.com`\r",
+                  ");\r",
+                  "\r",
+                  "pm.collectionVariables.set(\r",
+                  "    \"test_password\",\r",
+                  "    \"Test1234\"\r",
+                  ");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "const usuario = json.data || json.user || json;\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene username\", function () {\r",
+                  "    pm.expect(usuario.username).to.eql(\r",
+                  "        pm.collectionVariables.get(\"test_username\")\r",
+                  "    );\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene email\", function () {\r",
+                  "    pm.expect(usuario.email).to.eql(\r",
+                  "        pm.collectionVariables.get(\"test_email\")\r",
+                  "    );\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"No devuelve la contraseña\", function () {\r",
+                  "    pm.expect(usuario).to.not.have.property(\"password\");\r",
+                  "});\r",
+                  "\r",
+                  "const userId = usuario.id || usuario._id;\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene ID del usuario\", function () {\r",
+                  "    pm.expect(userId).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"user_id\", userId);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{test_name}}\",\r\n  \"username\": \"{{test_username}}\",\r\n  \"email\": \"{{test_email}}\",\r\n  \"password\": \"{{test_password}}\",\r\n  \"confirmPassword\": \"{{test_password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Registro Duplicado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 409\", function () {\r",
+                  "    pm.response.to.have.status(409);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene message\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"message\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"El mensaje indica conflicto de usuario\", function () {\r",
+                  "    pm.expect(json.message).to.be.a(\"string\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "packages": {},
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{test_name}}\",\r\n  \"username\": \"{{test_username}}\",\r\n  \"email\": \"{{test_email}}\",\r\n  \"password\": \"{{test_password}}\",\r\n  \"confirmPassword\": \"{{test_password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login invalido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene message\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"message\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"identificador\": \"{{test_email}}\",\r\n  \"password\": \"PasswordIncorrecta123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login exitoso",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const data = json.data || json.user || json;\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene usuario\", function () {\r",
+                  "    pm.expect(data).to.be.an(\"object\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene username\", function () {\r",
+                  "    pm.expect(data.username).to.eql(\r",
+                  "        pm.collectionVariables.get(\"test_username\")\r",
+                  "    );\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene email\", function () {\r",
+                  "    pm.expect(data.email).to.eql(\r",
+                  "        pm.collectionVariables.get(\"test_email\")\r",
+                  "    );\r",
+                  "});\r",
+                  "\r",
+                  "const token =\r",
+                  "    data.access_token ||\r",
+                  "    data.accessToken ||\r",
+                  "    json.access_token ||\r",
+                  "    json.accessToken ||\r",
+                  "    json.token;\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene access token\", function () {\r",
+                  "    pm.expect(token).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"access_token\", token);\r",
+                  "\r",
+                  "const userId = data.id || data._id;\r",
+                  "\r",
+                  "if (userId) {\r",
+                  "    pm.collectionVariables.set(\"user_id\", userId);\r",
+                  "}\r",
+                  "\r",
+                  "pm.execution.setNextRequest(\"Crear Categoria\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"identificador\": \"{{test_email}}\",\r\n  \"password\": \"{{test_password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Plus a Premium",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const data = json.data || json.user || json;\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene usuario\", function () {\r",
+                  "    pm.expect(data).to.be.an(\"object\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"El plan es Premium\", function () {\r",
+                  "    pm.expect(data.plan).to.eql(\"premium\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.execution.setNextRequest(\"Crear pelicula 5 - Premium\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/me/plan",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "plan"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upgrade ya premium",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 409\", function () {\r",
+                  "    pm.response.to.have.status(409);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene message\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"message\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"El mensaje indica que ya es Premium\", function () {\r",
+                  "    pm.expect(json.message).to.eql(\r",
+                  "        \"El usuario ya tiene el plan premium\"\r",
+                  "    );\r",
+                  "});\r",
+                  "\r",
+                  "pm.execution.setNextRequest(\"Obtener peliculas por Usuario\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/me/plan",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "plan"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const data = json.data || json.user || json;\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene usuario\", function () {\r",
+                  "    pm.expect(data).to.be.an(\"object\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"El usuario es admin\", function () {\r",
+                  "    pm.expect(data.role).to.eql(\"admin\");\r",
+                  "});\r",
+                  "\r",
+                  "const token =\r",
+                  "    data.access_token ||\r",
+                  "    data.accessToken ||\r",
+                  "    json.access_token ||\r",
+                  "    json.accessToken ||\r",
+                  "    json.token;\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene access token\", function () {\r",
+                  "    pm.expect(token).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"admin_token\", token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"identificador\": \"{{admin_email}}\",\r\n  \"password\": \"{{admin_password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Categoria",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const timestamp = Date.now();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\r",
+                  "    \"category_name\",\r",
+                  "    `Categoria Test ${timestamp}`\r",
+                  ");\r",
+                  "\r",
+                  "pm.collectionVariables.set(\r",
+                  "    \"category_description\",\r",
+                  "    \"Categoría creada automáticamente para pruebas de Postman.\"\r",
+                  ");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const category = json.data || json.category || json;\r",
+                  "\r",
+                  "pm.test(\"La categoría fue creada\", function () {\r",
+                  "    pm.expect(category).to.be.an(\"object\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"La categoría tiene nombre\", function () {\r",
+                  "    pm.expect(category.name).to.eql(\r",
+                  "        pm.collectionVariables.get(\"category_name\")\r",
+                  "    );\r",
+                  "});\r",
+                  "\r",
+                  "const categoryId = category.id || category._id;\r",
+                  "\r",
+                  "pm.test(\"La categoría contiene ID\", function () {\r",
+                  "    pm.expect(categoryId).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"category_id\", categoryId);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{category_name}}\",\r\n  \"description\": \"{{category_description}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Categoria duplicada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 409\", function () {\r",
+                  "    pm.response.to.have.status(409);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene message\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"message\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{category_name}}\",\r\n  \"description\": \"{{category_description}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Categorias",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const categories = json.data || json;\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene categorías\", function () {\r",
+                  "    pm.expect(categories).to.be.an(\"array\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Categoria por Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const category = json.data || json.category || json;\r",
+                  "\r",
+                  "pm.test(\"La categoría corresponde a la creada\", function () {\r",
+                  "    pm.expect(category.name).to.eql(\r",
+                  "        pm.collectionVariables.get(\"category_name\")\r",
+                  "    );\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories/{{category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories",
+                "{{category_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Modificar categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const category = json.data || json.category || json;\r",
+                  "\r",
+                  "pm.test(\"La descripción fue modificada\", function () {\r",
+                  "    pm.expect(category.description).to.eql(\r",
+                  "        \"Descripción modificada durante las pruebas.\"\r",
+                  "    );\r",
+                  "});\r",
+                  "\r",
+                  "pm.execution.setNextRequest(\"Crear pelicula 1\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"description\": \"Descripción modificada durante las pruebas.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/categories/{{category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories",
+                "{{category_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Categoria con Películas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 409\", function () {\r",
+                  "    pm.response.to.have.status(409);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene message\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"message\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"La categoría no se puede eliminar porque tiene películas\", function () {\r",
+                  "    pm.expect(json.message).to.eql(\r",
+                  "        \"No se puede eliminar una categoría que tiene películas asociadas\"\r",
+                  "    );\r",
+                  "});\r",
+                  "\r",
+                  "pm.execution.setNextRequest(\"Crear Categoria sin Peliculas\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories/{{category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories",
+                "{{category_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Categoria sin peliculas",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const timestamp = Date.now();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\r",
+                  "    \"category_delete_name\",\r",
+                  "    `Categoria Delete ${timestamp}`\r",
+                  ");\r",
+                  "\r",
+                  "pm.collectionVariables.set(\r",
+                  "    \"category_delete_description\",\r",
+                  "    \"Categoría creada para probar eliminación.\"\r",
+                  ");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const category = json.data || json.category || json;\r",
+                  "\r",
+                  "pm.test(\"La categoría fue creada\", function () {\r",
+                  "    pm.expect(category).to.be.an(\"object\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"El nombre es correcto\", function () {\r",
+                  "    pm.expect(category.name).to.eql(\r",
+                  "        pm.collectionVariables.get(\"category_delete_name\")\r",
+                  "    );\r",
+                  "});\r",
+                  "\r",
+                  "const categoryId = category.id || category._id;\r",
+                  "\r",
+                  "pm.test(\"La categoría tiene ID\", function () {\r",
+                  "    pm.expect(categoryId).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"category_delete_id\", categoryId);\r",
+                  "\r",
+                  "pm.execution.setNextRequest(\"Eliminar Categoria sin Peliculas\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{category_delete_name}}\",\r\n  \"description\": \"{{category_delete_description}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Categoria sin peliculas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 204\", function () {\r",
+                  "    pm.response.to.have.status(204);\r",
+                  "});\r",
+                  "\r",
+                  "pm.execution.setNextRequest(\"Get Categoria Eliminada\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories/{{category_delete_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories",
+                "{{category_delete_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Categoria Eliminada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene message\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"message\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.execution.setNextRequest(null);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories/{{category_delete_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories",
+                "{{category_delete_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Movies",
+      "item": [
+        {
+          "name": "Crear pelicula 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const movie = json.data || json.movie || json;\r",
+                  "\r",
+                  "pm.test(\"La película fue creada\", function () {\r",
+                  "    pm.expect(movie).to.be.an(\"object\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"El título es correcto\", function () {\r",
+                  "    pm.expect(movie.title).to.eql(\"Interstellar\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Tiene tmdbId\", function () {\r",
+                  "    pm.expect(movie.tmdbId).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Tiene descripción\", function () {\r",
+                  "    pm.expect(movie.description).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "const movieId = movie.id || movie._id;\r",
+                  "\r",
+                  "pm.test(\"Tiene ID\", function () {\r",
+                  "    pm.expect(movieId).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"movie_1_id\", movieId);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Interstellar\",\r\n  \"description\": \"Un grupo de exploradores viaja por el espacio buscando una alternativa para garantizar la supervivencia de la humanidad.\",\r\n  \"releaseYear\": 2014,\r\n  \"category\": \"{{category_id}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/movies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear pelicula 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const movie = json.data || json.movie || json;\r",
+                  "\r",
+                  "pm.test(\"La película fue creada\", function () {\r",
+                  "    pm.expect(movie).to.be.an(\"object\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"El título es correcto\", function () {\r",
+                  "    pm.expect(movie.title).to.eql(\"The Matrix\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Tiene tmdbId\", function () {\r",
+                  "    pm.expect(movie.tmdbId).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "const movieId = movie.id || movie._id;\r",
+                  "\r",
+                  "pm.test(\"Tiene ID\", function () {\r",
+                  "    pm.expect(movieId).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"movie_2_id\", movieId);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"The Matrix\",\r\n  \"description\": \"Un programador descubre que la realidad que conoce es una simulación y comienza a cuestionar todo lo que lo rodea.\",\r\n  \"releaseYear\": 1999,\r\n  \"category\": \"{{category_id}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/movies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear pelicula 3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const movie = json.data || json.movie || json;\r",
+                  "\r",
+                  "pm.test(\"La película fue creada\", function () {\r",
+                  "    pm.expect(movie.title).to.eql(\"Avatar\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Tiene tmdbId\", function () {\r",
+                  "    pm.expect(movie.tmdbId).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "const movieId = movie.id || movie._id;\r",
+                  "\r",
+                  "pm.test(\"Tiene ID\", function () {\r",
+                  "    pm.expect(movieId).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"movie_3_id\", movieId);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Avatar\",\r\n  \"description\": \"Un exmarine llega a un planeta lejano y se ve involucrado en un conflicto entre los habitantes del lugar y los humanos.\",\r\n  \"releaseYear\": 2009,\r\n  \"category\": \"{{category_id}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/movies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear pelicula 4",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const movie = json.data || json.movie || json;\r",
+                  "\r",
+                  "pm.test(\"La película fue creada\", function () {\r",
+                  "    pm.expect(movie.title).to.eql(\"Gladiator\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Tiene tmdbId\", function () {\r",
+                  "    pm.expect(movie.tmdbId).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "const movieId = movie.id || movie._id;\r",
+                  "\r",
+                  "pm.test(\"Tiene ID\", function () {\r",
+                  "    pm.expect(movieId).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"movie_4_id\", movieId);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Gladiator\",\r\n  \"description\": \"Un general romano pierde todo y busca vengarse de quienes destruyeron su vida.\",\r\n  \"releaseYear\": 2000,\r\n  \"category\": \"{{category_id}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/movies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear pelicula 5 - Limite plus",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 409\", function () {\r",
+                  "    pm.response.to.have.status(409);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene message\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"message\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"El mensaje indica el límite del plan Plus\", function () {\r",
+                  "    pm.expect(json.message).to.eql(\r",
+                  "        \"El plan Plus permite un máximo de 4 películas\"\r",
+                  "    );\r",
+                  "});\r",
+                  "\r",
+                  "pm.execution.setNextRequest(\"Plus a Premium\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Titanic\",\r\n  \"description\": \"Una historia de amor se desarrolla a bordo de un transatlántico durante su viaje inaugural.\",\r\n  \"releaseYear\": 1997,\r\n  \"category\": \"{{category_id}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/movies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear pelicula 5 - Premium",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const movie = json.data || json.movie || json;\r",
+                  "\r",
+                  "pm.test(\"La quinta película fue creada\", function () {\r",
+                  "    pm.expect(movie).to.be.an(\"object\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"El título es correcto\", function () {\r",
+                  "    pm.expect(movie.title).to.eql(\"Titanic\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Tiene tmdbId\", function () {\r",
+                  "    pm.expect(movie.tmdbId).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "const movieId = movie.id || movie._id;\r",
+                  "\r",
+                  "pm.test(\"Tiene ID\", function () {\r",
+                  "    pm.expect(movieId).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"movie_5_id\", movieId);\r",
+                  "\r",
+                  "pm.execution.setNextRequest(\"Upgrade ya Premium\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Titanic\",\r\n  \"description\": \"Una historia de amor se desarrolla a bordo de un transatlántico durante su viaje inaugural.\",\r\n  \"releaseYear\": 1997,\r\n  \"category\": \"{{category_id}}\"\r\n}\r\n\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/movies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Peliculas por Usuario",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene data\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"data\");\r",
+                  "    pm.expect(json.data).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene pagination\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"pagination\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Hay películas\", function () {\r",
+                  "    pm.expect(json.data.length).to.be.greaterThan(0);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/movies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener pelicula por Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const movie = json.data || json.movie || json;\r",
+                  "\r",
+                  "pm.test(\"Es Interstellar\", function () {\r",
+                  "    pm.expect(movie.title).to.eql(\"Interstellar\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Tiene poster\", function () {\r",
+                  "    pm.expect(movie.poster).to.be.a(\"string\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/movies/{{movie_1_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies",
+                "{{movie_1_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filtrar por titulo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Existe data\", function () {\r",
+                  "    pm.expect(json.data).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"El resultado coincide con el filtro\", function () {\r",
+                  "    json.data.forEach(movie => {\r",
+                  "        pm.expect(movie.title.toLowerCase()).to.include(\"matrix\");\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/movies?title=Matrix",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "Matrix"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filtrar por Categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Existe data\", function () {\r",
+                  "    pm.expect(json.data).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Las películas pertenecen a la categoría\", function () {\r",
+                  "    json.data.forEach(movie => {\r",
+                  "        const categoryId =\r",
+                  "            movie.category?.id ||\r",
+                  "            movie.category?._id;\r",
+                  "\r",
+                  "        if (categoryId) {\r",
+                  "            pm.expect(categoryId).to.eql(\r",
+                  "                pm.collectionVariables.get(\"category_id\")\r",
+                  "            );\r",
+                  "        }\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/movies?category={{category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "{{category_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filtrar por año",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Existe data\", function () {\r",
+                  "    pm.expect(json.data).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Las películas corresponden al año\", function () {\r",
+                  "    json.data.forEach(movie => {\r",
+                  "        pm.expect(movie.releaseYear).to.eql(1999);\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/movies?releaseYear=1999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ],
+              "query": [
+                {
+                  "key": "releaseYear",
+                  "value": "1999"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Paginacion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Existe pagination\", function () {\r",
+                  "    pm.expect(json.pagination).to.be.an(\"object\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"La página es 1\", function () {\r",
+                  "    pm.expect(json.pagination.page).to.eql(1);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"El límite es 2\", function () {\r",
+                  "    pm.expect(json.pagination.limit).to.eql(2);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"No devuelve más de 2 películas\", function () {\r",
+                  "    pm.expect(json.data.length).to.be.at.most(2);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/movies?page=1&limit=2",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH Pelicula",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const movie = json.data || json.movie || json;\r",
+                  "\r",
+                  "pm.test(\"La película sigue siendo Interstellar\", function () {\r",
+                  "    pm.expect(movie.title).to.eql(\"Interstellar\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"La película tiene descripción\", function () {\r",
+                  "    pm.expect(movie.description).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"La categoría sigue existiendo\", function () {\r",
+                  "    pm.expect(movie.category).to.exist;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"description\": \"Una nueva descripción para probar la modificación parcial.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/movies/{{movie_1_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies",
+                "{{movie_1_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT Pelicula",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "const movie = json.data || json.movie || json;\r",
+                  "\r",
+                  "pm.test(\"El título es correcto\", function () {\r",
+                  "    pm.expect(movie.title).to.eql(\"Interstellar\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"El año es correcto\", function () {\r",
+                  "    pm.expect(movie.releaseYear).to.eql(2014);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"La categoría existe\", function () {\r",
+                  "    pm.expect(movie.category).to.exist;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Interstellar\",\r\n  \"description\": \"Descripción completa actualizada para probar PUT.\",\r\n  \"releaseYear\": 2014,\r\n  \"category\": \"{{category_id}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/movies/{{movie_1_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies",
+                "{{movie_1_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Borrar Pelicula",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 204\", function () {\r",
+                  "    pm.response.to.have.status(204);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/movies/{{movie_1_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies",
+                "{{movie_1_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get pelicula eliminada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.execution.setNextRequest(\"Eliminar Categoria con Peliculas\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/movies/{{movie_1_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies",
+                "{{movie_1_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Security",
+      "item": [
+        {
+          "name": "Peliculas sin token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/movies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Peliculas token invalido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "token-invalido",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/movies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Categoria usuario normal",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 403\", function () {\r",
+                  "    pm.response.to.have.status(403);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"La respuesta contiene message\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"message\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Categoria Security Test\",\r\n  \"description\": \"Prueba de permisos.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url_dev",
+      "value": ""
+    },
+    {
+      "key": "base_url",
+      "value": ""
+    },
+    {
+      "key": "prod_base_url",
+      "value": ""
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "user_id",
+      "value": ""
+    },
+    {
+      "key": "admin_id",
+      "value": ""
+    },
+    {
+      "key": "admin_email",
+      "value": ""
+    },
+    {
+      "key": "admin_password",
+      "value": ""
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    },
+    {
+      "key": "category_id",
+      "value": ""
+    },
+    {
+      "key": "category_delete_id",
+      "value": ""
+    },
+    {
+      "key": "test_name",
+      "value": ""
+    },
+    {
+      "key": "test_username",
+      "value": ""
+    },
+    {
+      "key": "test_email",
+      "value": ""
+    },
+    {
+      "key": "test_password",
+      "value": ""
+    },
+    {
+      "key": "category_name",
+      "value": ""
+    },
+    {
+      "key": "category_description",
+      "value": ""
+    },
+    {
+      "key": "movie_1_id",
+      "value": ""
+    },
+    {
+      "key": "movie_2_id",
+      "value": ""
+    },
+    {
+      "key": "movie_3_id",
+      "value": ""
+    },
+    {
+      "key": "movie_4_id",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "movie_5_id",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
