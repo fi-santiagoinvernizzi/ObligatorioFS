@@ -10,6 +10,12 @@ import { middlewareErrores } from "./src/v1/middleware/error.middleware.js";
 
 const app = express();
 
+app.use(cors({
+    origin: "http://localhost:5000",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    maxAge: 86400
+}))
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -33,11 +39,7 @@ app.use(
     apiRoutes
 );
 
-app.use(cors({
-    origin: "http://localhost:5000",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    maxAge: 86400
-}))
+
 
 //mas rutas 
 app.use(middlewareErrores)
