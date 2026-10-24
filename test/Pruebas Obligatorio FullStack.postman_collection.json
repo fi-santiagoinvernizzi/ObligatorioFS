@@ -333,7 +333,7 @@
                   "    pm.collectionVariables.set(\"user_id\", userId);\r",
                   "}\r",
                   "\r",
-                  "pm.execution.setNextRequest(\"Crear Categoria\");"
+                  "pm.execution.setNextRequest(\"Login Admin\");"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -524,7 +524,8 @@
                   "    pm.expect(token).to.exist;\r",
                   "});\r",
                   "\r",
-                  "pm.collectionVariables.set(\"admin_token\", token);"
+                  "pm.collectionVariables.set(\"admin_token\", token);\r",
+                  "pm.execution.setNextRequest(\"Crear Categoria\");"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -2319,11 +2320,39 @@
       "value": ""
     },
     {
+      "key": "user_id",
+      "value": ""
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    },
+    {
       "key": "access_token",
       "value": ""
     },
     {
-      "key": "user_id",
+      "key": "category_id",
+      "value": ""
+    },
+    {
+      "key": "category_delete_id",
+      "value": ""
+    },
+    {
+      "key": "category_name",
+      "value": ""
+    },
+    {
+      "key": "category_description",
+      "value": ""
+    },
+    {
+      "key": "category_delete_name",
+      "value": ""
+    },
+    {
+      "key": "category_delete_description",
       "value": ""
     },
     {
@@ -2336,18 +2365,6 @@
     },
     {
       "key": "admin_password",
-      "value": ""
-    },
-    {
-      "key": "admin_token",
-      "value": ""
-    },
-    {
-      "key": "category_id",
-      "value": ""
-    },
-    {
-      "key": "category_delete_id",
       "value": ""
     },
     {
@@ -2364,14 +2381,6 @@
     },
     {
       "key": "test_password",
-      "value": ""
-    },
-    {
-      "key": "category_name",
-      "value": ""
-    },
-    {
-      "key": "category_description",
       "value": ""
     },
     {

@@ -4,6 +4,8 @@ import "dotenv/config";
 import { connectMongo } from "./src/v1/config/mongo.config.js";
 import apiRoutes from "./src/v1/routes/index.js";
 
+import cors from "cors"
+
 import { middlewareErrores } from "./src/v1/middleware/error.middleware.js";
 
 const app = express();
@@ -31,6 +33,11 @@ app.use(
     apiRoutes
 );
 
+app.use(cors({
+    origin: "https://obligatorio-fs-three.vercel.app/",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    maxAge: 86400
+}))
 
 //mas rutas 
 app.use(middlewareErrores)
