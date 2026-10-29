@@ -17,7 +17,7 @@ movieRoutes.patch("/:idMovie", authMiddleware, sanitizeMovieMiddleware , validat
                     validateRequest(updateMovieSchema, "body"), updateMovieController);
 movieRoutes.put("/:idMovie", authMiddleware, sanitizeMovieMiddleware, validateRequest(movieIdParamsSchema, "params"), 
                 validateRequest(replaceMovieSchema, "body"), replaceMovieController);
-movieRoutes.delete( "/:idMovie", authMiddleware, validateRequest(movieIdParamsSchema, "params"), deleteMovieController);
 movieRoutes.delete( "/:idMovie/poster", authMiddleware, validateRequest(movieIdParamsSchema, "params"), deleteCustomPosterController);
+movieRoutes.delete( "/:idMovie", authMiddleware, validateRequest(movieIdParamsSchema, "params"), deleteMovieController);
 
 export default movieRoutes;

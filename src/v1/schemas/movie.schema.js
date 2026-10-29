@@ -27,13 +27,13 @@ export const createMovieSchema = Joi.object({
         }),
 
     posterPersonalizado: Joi.string()
-        .uri()
+        .uri({ scheme: ["https"] })
         .allow(null),
 
     posterCloudinaryId: Joi.string()
         .trim()
         .allow(null),
-});
+}).and("posterPersonalizado", "posterCloudinaryId");
 
 export const movieIdParamsSchema = Joi.object({
     idMovie: Joi.string()
@@ -57,13 +57,13 @@ export const updateMovieSchema = Joi.object({
             "string.pattern.base": "El ID de la categoría no es válido"
         }),
     posterPersonalizado: Joi.string()
-        .uri()
+        .uri({ scheme: ["https"] })
         .allow(null),
     posterCloudinaryId: Joi.string()
         .trim()
         .allow(null)
 
-}).min(1).required();
+}).min(1).required().and("posterPersonalizado", "posterCloudinaryId");
 
 export const replaceMovieSchema = Joi.object({
     title: Joi.string().trim().min(1).max(150).required(),
@@ -80,9 +80,9 @@ export const replaceMovieSchema = Joi.object({
             "string.pattern.base": "El ID de la categoría no es válido"
         }),
     posterPersonalizado: Joi.string()
-        .uri()
+        .uri({ scheme: ["https"] })
         .allow(null),
     posterCloudinaryId: Joi.string()
         .trim()
         .allow(null)
-});
+}).and("posterPersonalizado", "posterCloudinaryId");

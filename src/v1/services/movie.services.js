@@ -86,7 +86,6 @@ export const getMoviesService = async ( userId, page, limit, filters = {}) => {
             try {
                 const tmdbMovie = await obtenerPeliculaTMDB(movie.tmdbId);
                 poster = obtenerPosterTMDB(tmdbMovie.poster_path);
-                if(poster == null ) { poster = `No se pudo obtener el poster de TMDB para la película ${movie._id}`}
             } catch (error) {
                 console.error( `No se pudo obtener el poster de TMDB para la película ${movie._id}:`, error.message);
             }
@@ -151,6 +150,8 @@ export const updateMovieService = async (movieId, userId, data) => {
 
     if (!movie) { throw constructorError("Película no encontrada", 404); }
 
+    const posterCloudinaryAnterior = movie.posterCloudinaryId;
+
     if (data.title !== undefined) { movie.title = data.title; }
 
     if (data.description !== undefined) { movie.description = await embellishText(data.description); }
@@ -179,13 +180,24 @@ export const updateMovieService = async (movieId, userId, data) => {
             movie.releaseYear
         );
 
-        if (!tmdbMovie) {
-            throw constructorError( "No se encontró la película en TMDB", 404 );
-        }
+        if (!tmdbMovie) { throw constructorError( "No se encontró la película en TMDB", 404 ); }
 
         movie.tmdbId = tmdbMovie.id;
     }
-    return await movie.save();
+    const movieActualizada = await movie.save();
+
+    if ( posterCloudinaryAnterior && posterCloudinaryAnterior !== movie.posterCloudinaryId) {
+        try {
+            await eliminarImagen(posterCloudinaryAnterior);
+        } catch (error) {
+            console.error(
+                "No se pudo eliminar el póster anterior de Cloudinary:",
+                error.message
+            );
+        }
+    }
+
+    return movieActualizada;
 };
 
 export const replaceMovieService = async (movieId, userId, data) => {
@@ -195,6 +207,8 @@ export const replaceMovieService = async (movieId, userId, data) => {
     });
 
     if (!movie) { throw constructorError("Película no encontrada", 404); }
+    
+    const posterCloudinaryAnterior = movie.posterCloudinaryId;
 
     const category = await Category.findById(data.category);
 
@@ -226,7 +240,20 @@ export const replaceMovieService = async (movieId, userId, data) => {
         movie.posterCloudinaryId = data.posterCloudinaryId;
     }
 
-    return await movie.save();
+    const movieActualizada = await movie.save();
+
+    if ( posterCloudinaryAnterior && posterCloudinaryAnterior !== movie.posterCloudinaryId) {
+        try {
+            await eliminarImagen(posterCloudinaryAnterior);
+        } catch (error) {
+            console.error(
+                "No se pudo eliminar el póster anterior de Cloudinary:",
+                error.message
+            );
+        }
+    }
+
+    return movieActualizada;
 };
 
 export const deleteMovieService = async (movieId, userId) => {
@@ -235,9 +262,24 @@ export const deleteMovieService = async (movieId, userId) => {
         user: userId
     });
 
-    if (!movie) { throw constructorError("Película no encontrada", 404); }
+    if (!movie) {
+        throw constructorError("Película no encontrada", 404);
+    }
+
+    const posterCloudinaryId = movie.posterCloudinaryId;
 
     await movie.deleteOne();
+
+    if (posterCloudinaryId) {
+        try {
+            await eliminarImagen(posterCloudinaryId);
+        } catch (error) {
+            console.error(
+                "No se pudo eliminar el póster de Cloudinary al borrar la película:",
+                error.message
+            );
+        }
+    }
 };
 
 export const deleteCustomPosterService = async (movieId, userId) => {
@@ -261,12 +303,19 @@ export const deleteCustomPosterService = async (movieId, userId) => {
         );
     }
 
-    await eliminarImagen(movie.posterCloudinaryId);
+    const publicId = movie.posterCloudinaryId;
 
     movie.posterPersonalizado = null;
     movie.posterCloudinaryId = null;
 
     await movie.save();
+
+    try {
+        await eliminarImagen(publicId);
+    } catch (error) {
+        // La película ya quedó sin el póster personalizado.
+        console.error( `No se pudo eliminar la imagen ${publicId} de Cloudinary:`, error.message);
+    }
 
     let posterTMDB = null;
 
@@ -274,10 +323,7 @@ export const deleteCustomPosterService = async (movieId, userId) => {
         const tmdbMovie = await obtenerPeliculaTMDB(movie.tmdbId);
         posterTMDB = obtenerPosterTMDB(tmdbMovie.poster_path);
     } catch (error) {
-        console.error(
-            `No se pudo recuperar el póster de TMDB para la película ${movie._id}:`,
-            error.message
-        );
+        console.error(`No se pudo recuperar el póster de TMDB para la película ${movie._id}:`, error.message);
     }
 
     return {
