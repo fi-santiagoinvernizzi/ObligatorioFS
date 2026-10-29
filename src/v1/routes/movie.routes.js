@@ -4,7 +4,7 @@ import { authMiddleware } from "../middleware/auth.middleware.js";
 import { validateRequest } from "../middleware/validate.middleware.js";
 
 import { createMovieController, getMoviesController, getMovieByIdController, updateMovieController, replaceMovieController,
-         deleteMovieController }from "../controller/movie.controller.js";
+         deleteMovieController, deleteCustomPosterController }from "../controller/movie.controller.js";
 
 import { createMovieSchema, movieIdParamsSchema, updateMovieSchema, replaceMovieSchema } from "../schemas/movie.schema.js";
 
@@ -18,5 +18,6 @@ movieRoutes.patch("/:idMovie", authMiddleware, sanitizeMovieMiddleware , validat
 movieRoutes.put("/:idMovie", authMiddleware, sanitizeMovieMiddleware, validateRequest(movieIdParamsSchema, "params"), 
                 validateRequest(replaceMovieSchema, "body"), replaceMovieController);
 movieRoutes.delete( "/:idMovie", authMiddleware, validateRequest(movieIdParamsSchema, "params"), deleteMovieController);
+movieRoutes.delete( "/:idMovie/poster", authMiddleware, validateRequest(movieIdParamsSchema, "params"), deleteCustomPosterController);
 
 export default movieRoutes;

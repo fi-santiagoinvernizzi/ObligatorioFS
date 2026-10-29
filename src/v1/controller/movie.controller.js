@@ -1,5 +1,5 @@
 import {createMovieService, getMoviesService, getMovieByIdService, updateMovieService,
-        replaceMovieService, deleteMovieService } from "../services/movie.services.js";
+        replaceMovieService, deleteMovieService, deleteCustomPosterService } from "../services/movie.services.js";
 
 export const createMovieController = async (req, res, next) => {
     try {
@@ -88,6 +88,19 @@ export const deleteMovieController = async (req, res, next) => {
         );
         return res.status(204).send();
         
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteCustomPosterController = async (req, res, next) => {
+    try {
+        const movie = await deleteCustomPosterService(
+            req.params.idMovie,
+            req.user.id
+        );
+
+        return res.status(200).json(movie);
     } catch (error) {
         next(error);
     }

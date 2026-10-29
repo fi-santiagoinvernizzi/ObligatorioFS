@@ -24,7 +24,15 @@ export const createMovieSchema = Joi.object({
         .required()
         .messages({
             "string.pattern.base": "El ID de la categoría no es válido"
-        })
+        }),
+
+    posterPersonalizado: Joi.string()
+        .uri()
+        .allow(null),
+
+    posterCloudinaryId: Joi.string()
+        .trim()
+        .allow(null),
 });
 
 export const movieIdParamsSchema = Joi.object({
@@ -47,7 +55,14 @@ export const updateMovieSchema = Joi.object({
         .pattern(/^[0-9a-fA-F]{24}$/)
         .messages({
             "string.pattern.base": "El ID de la categoría no es válido"
-        })
+        }),
+    posterPersonalizado: Joi.string()
+        .uri()
+        .allow(null),
+    posterCloudinaryId: Joi.string()
+        .trim()
+        .allow(null)
+
 }).min(1).required();
 
 export const replaceMovieSchema = Joi.object({
@@ -63,5 +78,11 @@ export const replaceMovieSchema = Joi.object({
         .required()
         .messages({
             "string.pattern.base": "El ID de la categoría no es válido"
-        })
+        }),
+    posterPersonalizado: Joi.string()
+        .uri()
+        .allow(null),
+    posterCloudinaryId: Joi.string()
+        .trim()
+        .allow(null)
 });

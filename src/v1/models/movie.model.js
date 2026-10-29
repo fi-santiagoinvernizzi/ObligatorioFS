@@ -34,6 +34,15 @@ const movieSchema = new mongoose.Schema({
         type: Number,
         required: false
     },
+        posterPersonalizado: {
+        type: String,
+        default: null
+    },
+
+    posterCloudinaryId: {
+        type: String,
+        default: null
+    },
 });
 
 movieSchema.set("toJSON", {
