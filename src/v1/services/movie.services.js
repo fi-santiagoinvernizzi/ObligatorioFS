@@ -54,7 +54,26 @@ export const createMovieService = async (data, userId) => {
         posterCloudinaryId: data.posterCloudinaryId || null
     });
 
-    return movie;
+    const peliculaCompleta = await Movie.findById(movie._id)
+    .populate("category", "name description")
+    .lean();
+
+    let poster = null;
+
+    try {
+        const tmdbMovie = await obtenerPeliculaTMDB(peliculaCompleta.tmdbId);
+        poster = obtenerPosterTMDB(tmdbMovie.poster_path);
+    } catch (error) {
+        console.error(
+            `No se pudo obtener el póster de TMDB para la película ${movie._id}:`,
+            error.message
+        );
+    }
+
+    const posterTMDB = poster;
+    const posterAMostrar = peliculaCompleta.posterPersonalizado || posterTMDB;
+
+    return { ...peliculaCompleta, posterTMDB, poster: posterAMostrar};
 };
 
 export const getMoviesService = async ( userId, page, limit, filters = {}) => {
