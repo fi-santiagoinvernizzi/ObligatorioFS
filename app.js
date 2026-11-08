@@ -11,7 +11,7 @@ import { middlewareErrores } from "./src/v1/middleware/error.middleware.js";
 const app = express();
 
 app.use(cors({
-    origin: "http://localhost:5000",
+    origin: "https://obligatorio-fs-frontend-omega.vercel.app/",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     maxAge: 86400
 }))
